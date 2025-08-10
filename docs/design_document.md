@@ -62,43 +62,47 @@ erDiagram
     USERS ||--o{ NOTIFICATIONS : recipient
 
     JOBS ||--o{ JOB_RECORDS : contains
+    JOBS ||--o{ EVENTS : emits
     LOAN_APPLICATIONS ||--o{ JOB_RECORDS : targets
     LOAN_APPLICATIONS ||--o{ DOCUMENTS : has
     JOB_RECORDS ||--o{ AGENT_RUNS : attempts
     JOB_RECORDS ||--o{ RPA_UPLOADS : uploads
     JOB_RECORDS ||--o{ EVENTS : emits
     JOB_RECORDS ||--o{ NOTIFICATIONS : notifies
-
-    JOB_RECORDS ||--o{ SOLID_QUEUE_JOBS : enqueues
+    DOCUMENTS ||--o{ RPA_UPLOADS : uploads
 
     SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_READY_EXECUTIONS : dispatches
     SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_SCHEDULED_EXECUTIONS : schedules
-    SOLID_QUEUE_READY_EXECUTIONS ||--o{ SOLID_QUEUE_CLAIMED_EXECUTIONS : claims
-    SOLID_QUEUE_CLAIMED_EXECUTIONS ||--o{ SOLID_QUEUE_FAILED_EXECUTIONS : fails
+    SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_CLAIMED_EXECUTIONS : claims
+    SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_FAILED_EXECUTIONS : fails
+    SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_BLOCKED_EXECUTIONS : blocks
+    SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_RECURRING_EXECUTIONS : recurs
     SOLID_QUEUE_BLOCKED_EXECUTIONS }o--|| SOLID_QUEUE_SEMAPHORES : controlled_by
-    SOLID_QUEUE_RECURRING_EXECUTIONS ||--o{ SOLID_QUEUE_JOBS : generates
-    SOLID_QUEUE_PAUSES }o--o{ SOLID_QUEUE_READY_EXECUTIONS : pauses
     SOLID_QUEUE_PROCESSES ||--o{ SOLID_QUEUE_CLAIMED_EXECUTIONS : supervises
+    SOLID_QUEUE_PAUSES }o--o{ SOLID_QUEUE_READY_EXECUTIONS : pauses
+    SOLID_QUEUE_RECURRING_TASKS ||--o{ SOLID_QUEUE_RECURRING_EXECUTIONS : generates
 
     ORGANIZATIONS {
-      bigint organization_id PK
+      bigint id PK
       string name
       string status
       datetime created_at
+      datetime updated_at
     }
 
     USERS {
-      bigint user_id PK
+      bigint id PK
       bigint organization_id FK
       string email
       string name
       string role
       string status
       datetime created_at
+      datetime updated_at
     }
 
     LOAN_APPLICATIONS {
-      bigint loan_id PK
+      bigint id PK
       bigint organization_id FK
       string applicant_id
       string los_external_id
@@ -110,34 +114,35 @@ erDiagram
     }
 
     JOBS {
-      bigint job_id PK
+      bigint id PK
       bigint organization_id FK
       string agent_type
       string trigger_source
       bigint user_id FK
       string status
-      int total_records
+      integer total_records
       datetime created_at
+      datetime updated_at
       datetime started_at
       datetime completed_at
     }
 
     JOB_RECORDS {
-      bigint job_record_id PK
+      bigint id PK
       bigint job_id FK
       bigint loan_application_id FK
       string state
-      int retry_count
+      integer retry_count
       datetime next_attempt_at
       string last_error_code
-      string last_error_msg
-      bigint solid_queue_job_id FK
+      text last_error_msg
+      bigint solid_queue_job_id
       datetime created_at
       datetime updated_at
     }
 
     AGENT_RUNS {
-      bigint agent_run_id PK
+      bigint id PK
       bigint job_record_id FK
       string phase
       string status
@@ -145,10 +150,12 @@ erDiagram
       datetime ended_at
       string worker_id
       string idempotency_key
+      datetime created_at
+      datetime updated_at
     }
 
     DOCUMENTS {
-      bigint document_id PK
+      bigint id PK
       bigint loan_application_id FK
       string document_type
       string status
@@ -157,37 +164,42 @@ erDiagram
       string storage_url
       string kms_key_id
       datetime created_at
+      datetime updated_at
     }
 
     RPA_UPLOADS {
-      bigint rpa_upload_id PK
+      bigint id PK
       bigint job_record_id FK
       bigint document_id FK
       string los_session_id
       string status
-      int attempt
+      integer attempt
       datetime started_at
       datetime ended_at
       string error_code
-      string error_msg
+      text error_msg
+      datetime created_at
+      datetime updated_at
     }
 
     EVENTS {
-      bigint event_id PK
+      bigint id PK
       bigint organization_id FK
       bigint user_id FK
       bigint job_id FK
-      bigint job_record_id FK
+      bigint job_record_id FK "nullable"
       string event_type
       string phase
       string severity
-      string message
+      text message
       datetime ts
       string trace_id
+      datetime created_at
+      datetime updated_at
     }
 
     NOTIFICATIONS {
-      bigint notification_id PK
+      bigint id PK
       bigint organization_id FK
       bigint job_record_id FK
       string channel
@@ -196,40 +208,58 @@ erDiagram
       string status
       datetime sent_at
       string error_msg
+      datetime created_at
+      datetime updated_at
     }
 
     ROUTING_RULES {
-      bigint rule_id PK
+      bigint id PK
       bigint organization_id FK
       boolean enabled
-      string criteria_json
-      datetime updated_at
+      jsonb criteria_json
       string checksum
       boolean canary
+      datetime created_at
+      datetime updated_at
+    }
+
+    RETRY_POLICIES {
+      bigint id PK
+      string name
+      integer max_attempts
+      integer base_backoff_sec
+      integer jitter_pct
+      datetime created_at
+      datetime updated_at
     }
 
     SOLID_QUEUE_JOBS {
       bigint id PK
       string queue_name
       string class_name
-      json arguments
-      int priority
+      text arguments
+      integer priority
+      string active_job_id
       datetime scheduled_at
-      datetime created_at
       datetime finished_at
-      int attempts
-      string last_error
+      string concurrency_key
+      datetime created_at
+      datetime updated_at
     }
 
     SOLID_QUEUE_READY_EXECUTIONS {
       bigint id PK
       bigint job_id FK
+      string queue_name
+      integer priority
       datetime created_at
     }
 
     SOLID_QUEUE_SCHEDULED_EXECUTIONS {
       bigint id PK
       bigint job_id FK
+      string queue_name
+      integer priority
       datetime scheduled_at
       datetime created_at
     }
@@ -237,58 +267,74 @@ erDiagram
     SOLID_QUEUE_CLAIMED_EXECUTIONS {
       bigint id PK
       bigint job_id FK
-      string process_id
-      datetime claimed_at
-      datetime heartbeat_at
+      bigint process_id
+      datetime created_at
     }
 
     SOLID_QUEUE_FAILED_EXECUTIONS {
       bigint id PK
       bigint job_id FK
-      string error_class
-      string error_message
-      text backtrace
-      datetime failed_at
+      text error
+      datetime created_at
     }
 
     SOLID_QUEUE_BLOCKED_EXECUTIONS {
       bigint id PK
       bigint job_id FK
-      string semaphore_key
+      string queue_name
+      integer priority
+      string concurrency_key
+      datetime expires_at
       datetime created_at
     }
 
     SOLID_QUEUE_SEMAPHORES {
       string key PK
-      int value
+      integer value
+      datetime expires_at
       datetime created_at
       datetime updated_at
     }
 
     SOLID_QUEUE_RECURRING_EXECUTIONS {
       bigint id PK
-      string job_class
-      json arguments
-      string cron
-      string queue_name
-      int priority
-      datetime next_run_at
+      bigint job_id FK
+      string task_key
+      datetime run_at
       datetime created_at
+    }
+
+    SOLID_QUEUE_RECURRING_TASKS {
+      bigint id PK
+      string key
+      string schedule
+      string command
+      string class_name
+      text arguments
+      string queue_name
+      integer priority
+      boolean static
+      text description
+      datetime created_at
+      datetime updated_at
     }
 
     SOLID_QUEUE_PAUSES {
       bigint id PK
       string queue_name
-      datetime paused_at
-      string reason
+      datetime created_at
     }
 
     SOLID_QUEUE_PROCESSES {
       string id PK
       string kind
-      string hostname
-      datetime started_at
       datetime last_heartbeat_at
+      bigint supervisor_id
+      integer pid
+      string hostname
+      text metadata
+      string name
+      datetime created_at
     }
 ```
 
