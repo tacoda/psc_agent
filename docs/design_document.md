@@ -50,7 +50,6 @@ successfully
 
 ```mermaid
 erDiagram
-    %% --- Ownership & actors ---
     ORGANIZATIONS ||--o{ USERS : has
     ORGANIZATIONS ||--o{ LOAN_APPLICATIONS : owns
     ORGANIZATIONS ||--o{ JOBS : owns
@@ -62,7 +61,6 @@ erDiagram
     USERS ||--o{ EVENTS : actor
     USERS ||--o{ NOTIFICATIONS : recipient
 
-    %% --- Domain orchestration ---
     JOBS ||--o{ JOB_RECORDS : contains
     LOAN_APPLICATIONS ||--o{ JOB_RECORDS : targets
     LOAN_APPLICATIONS ||--o{ DOCUMENTS : has
@@ -71,7 +69,6 @@ erDiagram
     JOB_RECORDS ||--o{ EVENTS : emits
     JOB_RECORDS ||--o{ NOTIFICATIONS : notifies
 
-    %% --- Solid Queue integration (replaces execution_queue + DLQ) ---
     JOB_RECORDS ||--o{ SOLID_QUEUE_JOBS : enqueues
 
     SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_READY_EXECUTIONS : dispatches
@@ -83,7 +80,6 @@ erDiagram
     SOLID_QUEUE_PAUSES }o--o{ SOLID_QUEUE_READY_EXECUTIONS : pauses
     SOLID_QUEUE_PROCESSES ||--o{ SOLID_QUEUE_CLAIMED_EXECUTIONS : supervises
 
-    %% --- Entity definitions (business) ---
     ORGANIZATIONS {
       bigint organization_id PK
       string name
@@ -135,7 +131,7 @@ erDiagram
       datetime next_attempt_at
       string last_error_code
       string last_error_msg
-      bigint solid_queue_job_id FK  %% link into Solid Queue
+      bigint solid_queue_job_id FK
       datetime created_at
       datetime updated_at
     }
@@ -212,7 +208,6 @@ erDiagram
       boolean canary
     }
 
-    %% --- Solid Queue tables (canonical names) ---
     SOLID_QUEUE_JOBS {
       bigint id PK
       string queue_name
@@ -290,7 +285,7 @@ erDiagram
 
     SOLID_QUEUE_PROCESSES {
       string id PK
-      string kind        %% worker/dispatcher/scheduler/supervisor
+      string kind
       string hostname
       datetime started_at
       datetime last_heartbeat_at
