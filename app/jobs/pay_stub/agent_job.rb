@@ -4,7 +4,15 @@ module PayStub
 
     # perform(job_record_id)
     def perform(job_record_id)
-      jr = job_record or raise "JobRecord not found"
+      jr = JobRecord.find(job_record_id)
+      
+      # Handle different starting states (triggered from single job vs queued from batch)
+      if jr.state == "queued"
+        jr.update!(state: "triggered")
+      elsif jr.state != "triggered"
+        Rails.logger.warn "JobRecord #{job_record_id} is in unexpected state: #{jr.state}, expected 'triggered' or 'queued'"
+        # Continue processing anyway - might be a retry
+      end
 
       # Phase 1: define → locate → prepare
       DefineJob.perform_now(jr.id)

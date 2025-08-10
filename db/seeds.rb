@@ -28,7 +28,11 @@ ActiveRecord::Base.transaction do
     criteria_json: {
       trigger: "loan_approved",
       requires_income_doc: true,
-      queues: { collect: "pay_stub_collect", upload: "los_upload" }
+      queues: { 
+        collect: "pay_stub_collect", 
+        upload: "los_upload",
+        batch_collect: "pay_stub_batch"
+      }
     }
   )
   RoutingRule.create!(
@@ -36,7 +40,11 @@ ActiveRecord::Base.transaction do
     criteria_json: {
       trigger: "loan_approved",
       requires_income_doc: true,
-      queues: { collect: "pay_stub_collect_canary", upload: "los_upload_canary" }
+      queues: { 
+        collect: "pay_stub_collect_canary", 
+        upload: "los_upload_canary",
+        batch_collect: "pay_stub_batch_canary"
+      }
     }
   )
 

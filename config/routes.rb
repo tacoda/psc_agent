@@ -16,7 +16,9 @@ Rails.application.routes.draw do
 
   # Loan approval webhooks and triggers
   post "loan_approvals/webhook", to: "loan_approvals#webhook"
+  post "loan_approvals/batch_webhook", to: "loan_approvals#batch_webhook"
   post "loan_approvals/manual_trigger", to: "loan_approvals#manual_trigger"
+  post "loan_approvals/manual_batch_trigger", to: "loan_approvals#manual_batch_trigger"
   
   # RPA upload monitoring and management
   get "rpa_uploads/status", to: "rpa_uploads#status"
@@ -25,6 +27,14 @@ Rails.application.routes.draw do
   post "rpa_uploads/escalate_stuck", to: "rpa_uploads#escalate_stuck"
   post "rpa_uploads/retry_failed", to: "rpa_uploads#retry_failed"
   get "rpa_uploads/metrics", to: "rpa_uploads#metrics"
+  
+  # Batch job monitoring and management
+  get "batch_jobs", to: "batch_jobs#index"
+  get "batch_jobs/running", to: "batch_jobs#running"
+  get "batch_jobs/analytics", to: "batch_jobs#analytics"
+  get "batch_jobs/:id/status", to: "batch_jobs#status"
+  post "batch_jobs/:id/cancel", to: "batch_jobs#cancel"
+  post "batch_jobs/:id/retry_failed", to: "batch_jobs#retry_failed"
   
   get "audit" => "events#index"
 end
