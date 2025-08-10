@@ -50,31 +50,40 @@ successfully
 
 ```mermaid
 erDiagram
+    %% --- Ownership & actors ---
     ORGANIZATIONS ||--o{ USERS : has
     ORGANIZATIONS ||--o{ LOAN_APPLICATIONS : owns
     ORGANIZATIONS ||--o{ JOBS : owns
     ORGANIZATIONS ||--o{ EVENTS : scopes
     ORGANIZATIONS ||--o{ NOTIFICATIONS : scopes
-    ORGANIZATIONS ||--o{ EXECUTION_QUEUE : scopes
     ORGANIZATIONS ||--o{ ROUTING_RULES : config
 
     USERS ||--o{ JOBS : triggered_by
     USERS ||--o{ EVENTS : actor
     USERS ||--o{ NOTIFICATIONS : recipient
 
+    %% --- Domain orchestration ---
     JOBS ||--o{ JOB_RECORDS : contains
     LOAN_APPLICATIONS ||--o{ JOB_RECORDS : targets
     LOAN_APPLICATIONS ||--o{ DOCUMENTS : has
-
     JOB_RECORDS ||--o{ AGENT_RUNS : attempts
     JOB_RECORDS ||--o{ RPA_UPLOADS : uploads
     JOB_RECORDS ||--o{ EVENTS : emits
     JOB_RECORDS ||--o{ NOTIFICATIONS : notifies
-    JOB_RECORDS ||--o{ EXECUTION_QUEUE : enqueues
 
-    EXECUTION_QUEUE ||--o| DEAD_LETTER_QUEUE : deadletters
-    ROUTING_RULES ||--o{ JOBS : governs
+    %% --- Solid Queue integration (replaces execution_queue + DLQ) ---
+    JOB_RECORDS ||--o{ SOLID_QUEUE_JOBS : enqueues
 
+    SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_READY_EXECUTIONS : dispatches
+    SOLID_QUEUE_JOBS ||--o{ SOLID_QUEUE_SCHEDULED_EXECUTIONS : schedules
+    SOLID_QUEUE_READY_EXECUTIONS ||--o{ SOLID_QUEUE_CLAIMED_EXECUTIONS : claims
+    SOLID_QUEUE_CLAIMED_EXECUTIONS ||--o{ SOLID_QUEUE_FAILED_EXECUTIONS : fails
+    SOLID_QUEUE_BLOCKED_EXECUTIONS }o--|| SOLID_QUEUE_SEMAPHORES : controlled_by
+    SOLID_QUEUE_RECURRING_EXECUTIONS ||--o{ SOLID_QUEUE_JOBS : generates
+    SOLID_QUEUE_PAUSES }o--o{ SOLID_QUEUE_READY_EXECUTIONS : pauses
+    SOLID_QUEUE_PROCESSES ||--o{ SOLID_QUEUE_CLAIMED_EXECUTIONS : supervises
+
+    %% --- Entity definitions (business) ---
     ORGANIZATIONS {
       bigint organization_id PK
       string name
@@ -126,6 +135,7 @@ erDiagram
       datetime next_attempt_at
       string last_error_code
       string last_error_msg
+      bigint solid_queue_job_id FK  %% link into Solid Queue
       datetime created_at
       datetime updated_at
     }
@@ -192,27 +202,6 @@ erDiagram
       string error_msg
     }
 
-    EXECUTION_QUEUE {
-      bigint queue_msg_id PK
-      bigint organization_id FK
-      bigint job_record_id FK
-      string payload_ref
-      datetime visible_at
-      int attempts
-      int max_attempts
-      string status
-    }
-
-    DEAD_LETTER_QUEUE {
-      bigint dlq_msg_id PK
-      bigint orig_queue_msg_id FK
-      bigint job_record_id FK
-      string reason_code
-      string reason_detail
-      datetime moved_at
-      datetime redriven_at
-    }
-
     ROUTING_RULES {
       bigint rule_id PK
       bigint organization_id FK
@@ -221,6 +210,90 @@ erDiagram
       datetime updated_at
       string checksum
       boolean canary
+    }
+
+    %% --- Solid Queue tables (canonical names) ---
+    SOLID_QUEUE_JOBS {
+      bigint id PK
+      string queue_name
+      string class_name
+      json arguments
+      int priority
+      datetime scheduled_at
+      datetime created_at
+      datetime finished_at
+      int attempts
+      string last_error
+    }
+
+    SOLID_QUEUE_READY_EXECUTIONS {
+      bigint id PK
+      bigint job_id FK
+      datetime created_at
+    }
+
+    SOLID_QUEUE_SCHEDULED_EXECUTIONS {
+      bigint id PK
+      bigint job_id FK
+      datetime scheduled_at
+      datetime created_at
+    }
+
+    SOLID_QUEUE_CLAIMED_EXECUTIONS {
+      bigint id PK
+      bigint job_id FK
+      string process_id
+      datetime claimed_at
+      datetime heartbeat_at
+    }
+
+    SOLID_QUEUE_FAILED_EXECUTIONS {
+      bigint id PK
+      bigint job_id FK
+      string error_class
+      string error_message
+      text backtrace
+      datetime failed_at
+    }
+
+    SOLID_QUEUE_BLOCKED_EXECUTIONS {
+      bigint id PK
+      bigint job_id FK
+      string semaphore_key
+      datetime created_at
+    }
+
+    SOLID_QUEUE_SEMAPHORES {
+      string key PK
+      int value
+      datetime created_at
+      datetime updated_at
+    }
+
+    SOLID_QUEUE_RECURRING_EXECUTIONS {
+      bigint id PK
+      string job_class
+      json arguments
+      string cron
+      string queue_name
+      int priority
+      datetime next_run_at
+      datetime created_at
+    }
+
+    SOLID_QUEUE_PAUSES {
+      bigint id PK
+      string queue_name
+      datetime paused_at
+      string reason
+    }
+
+    SOLID_QUEUE_PROCESSES {
+      string id PK
+      string kind        %% worker/dispatcher/scheduler/supervisor
+      string hostname
+      datetime started_at
+      datetime last_heartbeat_at
     }
 ```
 
