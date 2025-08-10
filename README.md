@@ -14,6 +14,7 @@ A [technical design document](docs/design_document.md) is included in the docume
 
 ```sh
 bundle install
+bin/rails db:migrate:queue
 bin/rails db:migrate
 bin/rails db:seed
 bin/rails server
@@ -21,4 +22,6 @@ bin/rails server
 
 ## Usage
 
-Navigate to `loclhost:3000/`
+Navigate to `localhost:3000/`
+
+Trigger events with rake tasks for scenario testing.
