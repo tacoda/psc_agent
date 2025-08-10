@@ -150,7 +150,7 @@ erDiagram
     DOCUMENTS {
       bigint document_id PK
       bigint loan_application_id FK
-      string doc_type
+      string document_type
       string status
       string sha256
       bigint size_bytes
@@ -192,7 +192,7 @@ erDiagram
       bigint job_record_id FK
       string channel
       bigint user_id FK
-      string type
+      string notification_type
       string status
       datetime sent_at
       string error_msg
