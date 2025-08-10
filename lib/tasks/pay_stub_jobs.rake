@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 namespace :pay_stub do
 
   desc "Run all Pay Stub jobs in sequence for a given JobRecord ID"
@@ -16,7 +14,7 @@ namespace :pay_stub do
       locate:    PayStub::LocateJob,
       prepare:   PayStub::PrepareJob,
       confirm:   PayStub::ConfirmJob,
-      # execute:   PayStub::ExecuteJob,
+      execute:   PayStub::ExecuteJob,
       # monitor:   PayStub::MonitorJob,
       # modify:    PayStub::ModifyJob,
       # conclude:  PayStub::ConcludeJob
@@ -24,7 +22,7 @@ namespace :pay_stub do
   end
   
   # Create tasks for each job class
-  [:define, :locate, :prepare, :confirm].each do |name|
+  [:define, :locate, :prepare, :confirm, :execute].each do |name|
     desc "Run PayStub::#{name.to_s.camelize}Job for a given JobRecord ID"
     task name, [:job_record_id] => :environment do |_, args|
       ensure_id!(args[:job_record_id])

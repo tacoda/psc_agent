@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 module PayStub
   class BaseJob < ApplicationJob
     queue_as :pay_stub
