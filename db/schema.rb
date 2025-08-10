@@ -30,7 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_10_162551) do
 
   create_table "documents", force: :cascade do |t|
     t.bigint "loan_application_id", null: false
-    t.string "type"
+    t.string "document_type"
     t.string "status"
     t.string "sha256"
     t.bigint "size_bytes"
@@ -47,7 +47,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_10_162551) do
     t.bigint "user_id", null: false
     t.bigint "job_id", null: false
     t.bigint "job_record_id", null: false
-    t.string "type"
+    t.string "event_type"
     t.string "phase"
     t.string "severity"
     t.text "message"
@@ -108,7 +108,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_10_162551) do
     t.bigint "job_record_id", null: false
     t.string "channel"
     t.bigint "user_id", null: false
-    t.string "type"
+    t.string "notification_type"
     t.string "status"
     t.datetime "sent_at"
     t.string "error_msg"

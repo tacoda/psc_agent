@@ -15,6 +15,7 @@ A [technical design document](docs/design_document.md) is included in the docume
 ```sh
 bundle install
 bin/rails db:migrate
+bin/rails db:seed
 bin/rails server
 ```
 

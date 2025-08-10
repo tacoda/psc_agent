@@ -5,7 +5,7 @@ class CreateEvents < ActiveRecord::Migration[8.0]
       t.references :user, null: false, foreign_key: true
       t.references :job, null: false, foreign_key: true
       t.references :job_record, null: false, foreign_key: true
-      t.string :type
+      t.string :event_type
       t.string :phase
       t.string :severity
       t.text :message

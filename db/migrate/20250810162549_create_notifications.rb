@@ -5,7 +5,7 @@ class CreateNotifications < ActiveRecord::Migration[8.0]
       t.references :job_record, null: false, foreign_key: true
       t.string :channel
       t.references :user, null: false, foreign_key: true
-      t.string :type
+      t.string :notification_type
       t.string :status
       t.datetime :sent_at
       t.string :error_msg
