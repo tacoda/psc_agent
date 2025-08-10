@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  organization: one
+  agent_type: MyString
+  trigger_source: MyString
+  triggered_by_user: one
+  status: MyString
+  total_records: 1
+
+two:
+  organization: two
+  agent_type: MyString
+  trigger_source: MyString
+  triggered_by_user: two
+  status: MyString
+  total_records: 1

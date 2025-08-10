@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  loan: one
+  type: 
+  status: MyString
+  sha256: MyString
+  size_bytes: 
+  storage_url: MyString
+  kms_key_id: MyString
+
+two:
+  loan: two
+  type: 
+  status: MyString
+  sha256: MyString
+  size_bytes: 
+  storage_url: MyString
+  kms_key_id: MyString

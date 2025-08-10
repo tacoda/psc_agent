@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  max_attempts: 1
+  base_backoff_sec: 1
+  jitter_pct: 1
+
+two:
+  name: MyString
+  max_attempts: 1
+  base_backoff_sec: 1
+  jitter_pct: 1

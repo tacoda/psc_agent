@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  organization: one
+  applicant_id: MyString
+  los_external_id: MyString
+  status: MyString
+  income_doc_required: false
+  approved_at: 2025-08-10 17:25:41
+
+two:
+  organization: two
+  applicant_id: MyString
+  los_external_id: MyString
+  status: MyString
+  income_doc_required: false
+  approved_at: 2025-08-10 17:25:41

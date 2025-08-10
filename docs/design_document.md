@@ -114,7 +114,7 @@ erDiagram
       bigint organization_id FK
       string agent_type
       string trigger_source
-      bigint triggered_by_user_id FK
+      bigint user_id FK
       string status
       int total_records
       datetime created_at
@@ -125,7 +125,7 @@ erDiagram
     JOB_RECORDS {
       bigint job_record_id PK
       bigint job_id FK
-      bigint loan_id FK
+      bigint loan_application_id FK
       string state
       int retry_count
       datetime next_attempt_at
@@ -149,7 +149,7 @@ erDiagram
 
     DOCUMENTS {
       bigint document_id PK
-      bigint loan_id FK
+      bigint loan_application_id FK
       string type
       string status
       string sha256
@@ -191,7 +191,7 @@ erDiagram
       bigint organization_id FK
       bigint job_record_id FK
       string channel
-      bigint recipient_user_id FK
+      bigint user_id FK
       string type
       string status
       datetime sent_at

@@ -1,0 +1,2 @@
+class RetryPolicy < ApplicationRecord
+end

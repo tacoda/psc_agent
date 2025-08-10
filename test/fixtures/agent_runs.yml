@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  job_record: one
+  phase: MyString
+  status: MyString
+  started_at: 2025-08-10 17:25:43
+  ended_at: 2025-08-10 17:25:43
+  worker_id: MyString
+  idempotency_key: MyString
+
+two:
+  job_record: two
+  phase: MyString
+  status: MyString
+  started_at: 2025-08-10 17:25:43
+  ended_at: 2025-08-10 17:25:43
+  worker_id: MyString
+  idempotency_key: MyString

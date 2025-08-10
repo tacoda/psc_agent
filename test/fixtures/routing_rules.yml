@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  organization: one
+  enabled: false
+  criteria_json: 
+  checksum: MyString
+  canary: false
+
+two:
+  organization: two
+  enabled: false
+  criteria_json: 
+  checksum: MyString
+  canary: false
