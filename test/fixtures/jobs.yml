@@ -2,16 +2,16 @@
 
 one:
   organization: one
-  agent_type: MyString
-  trigger_source: MyString
-  triggered_by_user: one
-  status: MyString
+  agent_type: pay_stub_collection
+  trigger_source: webhook
+  user: one
+  status: active
   total_records: 1
 
 two:
   organization: two
-  agent_type: MyString
-  trigger_source: MyString
-  triggered_by_user: two
-  status: MyString
-  total_records: 1
+  agent_type: pay_stub_collection
+  trigger_source: manual
+  user: two
+  status: completed
+  total_records: 5

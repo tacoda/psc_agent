@@ -2,20 +2,20 @@
 
 one:
   job: one
-  loan: one
-  state: MyString
-  retry_count: 1
+  loan_application: one
+  state: active
+  retry_count: 0
   next_attempt_at: 2025-08-10 17:25:43
-  last_error_code: MyString
-  last_error_msg: MyText
-  solid_queue_job_id: 
+  last_error_code: 
+  last_error_msg: 
+  solid_queue_job_id: 123
 
 two:
   job: two
-  loan: two
-  state: MyString
-  retry_count: 1
+  loan_application: two
+  state: completed
+  retry_count: 2
   next_attempt_at: 2025-08-10 17:25:43
-  last_error_code: MyString
-  last_error_msg: MyText
-  solid_queue_job_id: 
+  last_error_code: upload_failed
+  last_error_msg: Failed to upload document
+  solid_queue_job_id: 456

@@ -1,19 +1,19 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  loan: one
-  type: 
-  status: MyString
-  sha256: MyString
-  size_bytes: 
-  storage_url: MyString
-  kms_key_id: MyString
+  loan_application: one
+  document_type: pay_stub
+  status: pending
+  sha256: abc123
+  size_bytes: 1024
+  storage_url: s3://bucket/doc1.pdf
+  kms_key_id: key-123
 
 two:
-  loan: two
-  type: 
-  status: MyString
-  sha256: MyString
-  size_bytes: 
-  storage_url: MyString
-  kms_key_id: MyString
+  loan_application: two
+  document_type: tax_return
+  status: completed
+  sha256: def456
+  size_bytes: 2048
+  storage_url: s3://bucket/doc2.pdf
+  kms_key_id: key-456

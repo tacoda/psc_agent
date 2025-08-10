@@ -5,21 +5,21 @@ one:
   user: one
   job: one
   job_record: one
-  type: 
-  phase: MyString
-  severity: MyString
-  message: MyText
+  event_type: rpa_upload_started
+  phase: upload
+  severity: info
+  message: Starting RPA upload for document
   ts: 2025-08-10 17:25:44
-  trace_id: MyString
+  trace_id: trace-123
 
 two:
   organization: two
   user: two
   job: two
   job_record: two
-  type: 
-  phase: MyString
-  severity: MyString
-  message: MyText
+  event_type: rpa_upload_completed
+  phase: upload
+  severity: info
+  message: RPA upload completed successfully
   ts: 2025-08-10 17:25:44
-  trace_id: MyString
+  trace_id: trace-456

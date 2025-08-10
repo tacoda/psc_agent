@@ -17,7 +17,7 @@ bundle install
 bin/rails db:migrate:queue
 bin/rails db:migrate
 bin/rails db:seed
-bin/rails server
+bin/dev
 ```
 
 ## Usage
@@ -26,13 +26,14 @@ The job dashboard is located at `localhost:3000/jobs`
 
 The audit trail is located at `localhost:3000/audits`
 
-Trigger events with rake tasks for scenario testing.
+Acceptance tests for the given stories can be verified with tests.
 
-Trigger individual step jobs with the following rake tasks:
+```sh
+# Run individual test suites
+rails test test/integration/loan_approval_trigger_acceptance_test.rb
+rails test test/integration/rpa_upload_acceptance_test.rb  
+rails test test/integration/rpa_escalation_acceptance_test.rb
 
- Task | Description |
-| --- | --- |
-| `rake "pay_stub:define[1]"` | Run the define step for job record 1 |
-| `rake "pay_stub:locate[1]"` | Run the locate step for job record 1 |
-
-Trigger the agent jobs with the following rake task:
+# Run all acceptance tests with summary
+ruby test/run_acceptance_tests.rb
+```

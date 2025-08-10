@@ -3,19 +3,19 @@
 one:
   organization: one
   job_record: one
-  channel: MyString
-  recipient_user: one
-  type: 
-  status: MyString
+  channel: email
+  user: one
+  notification_type: escalation
+  status: pending
   sent_at: 2025-08-10 17:25:45
-  error_msg: MyString
+  error_msg: 
 
 two:
   organization: two
   job_record: two
-  channel: MyString
-  recipient_user: two
-  type: 
-  status: MyString
+  channel: email
+  user: two
+  notification_type: info
+  status: sent
   sent_at: 2025-08-10 17:25:45
-  error_msg: MyString
+  error_msg:

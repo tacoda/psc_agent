@@ -1,0 +1,29 @@
+<h1 class="text-2xl font-bold mb-6">Audit Trail</h1>
+
+<div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+  <div class="flex flex-col">
+    <!-- Header row -->
+    <div class="flex bg-gray-50 font-semibold text-gray-700 border-b border-gray-200">
+      <div class="flex-1 px-4 py-3 text-left min-w-0">Trace Id</div>
+      <div class="flex-1 px-4 py-3 text-left min-w-0">Organization</div>
+      <div class="flex-1 px-4 py-3 text-left min-w-0">User</div>
+      <div class="flex-1 px-4 py-3 text-left min-w-0">Event</div>
+      <div class="flex-1 px-4 py-3 text-left min-w-0">Phase</div>
+      <div class="flex-1 px-4 py-3 text-left min-w-0">Message</div>
+      <div class="flex-1 px-4 py-3 text-left min-w-0">Time</div>
+    </div>
+    
+    <!-- Data rows -->
+    <% @events.each do |audit| %>
+      <div class="flex border-b border-gray-100 hover:bg-gray-50 transition-colors">
+        <div class="flex-1 px-4 py-3 text-sm text-gray-900 text-left min-w-0 truncate"><%= audit.trace_id %></div>
+        <div class="flex-1 px-4 py-3 text-sm text-gray-900 text-left min-w-0 truncate"><%= audit.organization.name %></div>
+        <div class="flex-1 px-4 py-3 text-sm text-gray-900 text-left min-w-0 truncate"><%= audit.user.name %></div>
+        <div class="flex-1 px-4 py-3 text-sm text-gray-900 text-left min-w-0 truncate"><%= audit.event_type %></div>
+        <div class="flex-1 px-4 py-3 text-sm text-gray-900 text-left min-w-0 truncate"><%= audit.phase %></div>
+        <div class="flex-1 px-4 py-3 text-sm text-gray-900 text-left min-w-0 truncate"><%= audit.message %></div>
+        <div class="flex-1 px-4 py-3 text-sm text-gray-600 text-left min-w-0 truncate"><%= audit.ts %></div>
+      </div>
+    <% end %>
+  </div>
+</div>

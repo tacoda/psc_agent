@@ -13,4 +13,18 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   mount MissionControl::Jobs::Engine, at: "/jobs"
+
+  # Loan approval webhooks and triggers
+  post "loan_approvals/webhook", to: "loan_approvals#webhook"
+  post "loan_approvals/manual_trigger", to: "loan_approvals#manual_trigger"
+  
+  # RPA upload monitoring and management
+  get "rpa_uploads/status", to: "rpa_uploads#status"
+  get "rpa_uploads/job_record/:id", to: "rpa_uploads#job_record_status"
+  get "rpa_uploads/stuck", to: "rpa_uploads#stuck_uploads"
+  post "rpa_uploads/escalate_stuck", to: "rpa_uploads#escalate_stuck"
+  post "rpa_uploads/retry_failed", to: "rpa_uploads#retry_failed"
+  get "rpa_uploads/metrics", to: "rpa_uploads#metrics"
+  
+  get "audit" => "events#index"
 end

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URGENT: RPA Upload Failed</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; background: #fff; }
+    .header { background: #dc3545; color: white; padding: 20px; border-radius: 5px 5px 0 0; }
+    .header h1 { margin: 0; font-size: 24px; }
+    .urgent-badge { background: #ff6b35; color: white; padding: 5px 10px; border-radius: 3px; font-weight: bold; font-size: 12px; }
+    .content { padding: 20px; }
+    .section { margin-bottom: 25px; }
+    .section h2 { color: #dc3545; border-bottom: 2px solid #dc3545; padding-bottom: 5px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .info-box { background: #f8f9fa; padding: 15px; border-radius: 5px; }
+    .info-box strong { color: #495057; }
+    .error-box { background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; }
+    .attempts-list { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; }
+    .attempts-list pre { margin: 0; white-space: pre-wrap; font-family: Monaco, monospace; font-size: 12px; }
+    .actions-list { background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 5px; }
+    .actions-list ol { margin: 10px 0; padding-left: 20px; }
+    .footer { background: #6c757d; color: white; padding: 15px; text-align: center; border-radius: 0 0 5px 5px; }
+    .btn { background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 10px 0; }
+    .btn:hover { background: #0056b3; }
+    .timestamp { color: #6c757d; font-size: 12px; }
+    .warning { color: #856404; }
+    .success { color: #155724; }
+    .danger { color: #721c24; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="urgent-badge">URGENT</span>
+      <h1>RPA Upload Failed - Manual Intervention Required</h1>
+      <p>Hello <%= @user.name %>, immediate attention is needed for a failed document upload.</p>
+    </div>
+    
+    <div class="content">
+      <div class="section">
+        <h2>📋 Loan Application Details</h2>
+        <div class="info-grid">
+          <div class="info-box">
+            <strong>Applicant ID:</strong><br>
+            <%= @loan_info[:applicant_id] %>
+          </div>
+          <div class="info-box">
+            <strong>LOS External ID:</strong><br>
+            <%= @loan_info[:los_external_id] %>
+          </div>
+          <div class="info-box">
+            <strong>Loan Status:</strong><br>
+            <%= @loan_info[:status]&.titleize %>
+          </div>
+          <div class="info-box">
+            <strong>Approved At:</strong><br>
+            <%= @loan_info[:approved_at]&.strftime('%m/%d/%Y %I:%M %p') || 'N/A' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>❌ Failure Summary</h2>
+        <div class="error-box">
+          <div class="info-grid">
+            <div>
+              <strong>Total Attempts:</strong> 
+              <span class="danger"><%= @retry_info[:total_attempts] %> of <%= @retry_info[:max_attempts_allowed] %></span>
+            </div>
+            <div>
+              <strong>Time Span:</strong> 
+              <%= @retry_info[:time_span_hours] %> hours
+            </div>
+            <div>
+              <strong>First Failure:</strong><br>
+              <span class="timestamp"><%= @retry_info[:first_failure_at]&.strftime('%m/%d/%Y %I:%M %p') %></span>
+            </div>
+            <div>
+              <strong>Final Failure:</strong><br>
+              <span class="timestamp"><%= @retry_info[:final_failure_at]&.strftime('%m/%d/%Y %I:%M %p') %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🔍 Final Error Details</h2>
+        <div class="error-box">
+          <strong>Error Code:</strong> <code><%= @final_error[:code] %></code><br>
+          <strong>Error Message:</strong> <%= @final_error[:message] %><br>
+          <strong>Error Type:</strong> <%= @final_error[:error_class] %><br>
+          <strong>Retryable:</strong> 
+          <span class="<%= @final_error[:is_retryable] ? 'warning' : 'danger' %>">
+            <%= @final_error[:is_retryable] ? 'Yes' : 'No' %>
+          </span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>📊 Failure Pattern Analysis</h2>
+        <div class="info-box">
+          <pre><%= @formatted_failure_analysis %></pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>📝 Upload Attempt History</h2>
+        <div class="attempts-list">
+          <pre><%= @formatted_upload_attempts %></pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🔧 Suggested Actions</h2>
+        <div class="actions-list">
+          <strong>Please take the following steps to resolve this issue:</strong>
+          <ol>
+            <% @escalation_info[:suggested_actions].each do |action| %>
+              <li><%= action.gsub(/^\d+\.\s*/, '') %></li>
+            <% end %>
+          </ol>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🔗 System Information</h2>
+        <div class="info-box">
+          <strong>Job Record ID:</strong> <%= @job_record_id %><br>
+          <strong>Organization:</strong> <%= @organization.name %><br>
+          <strong>Escalated At:</strong> <%= @escalation_info[:escalated_at].strftime('%m/%d/%Y %I:%M %p') %><br>
+          <strong>System Status:</strong> <span class="danger">Manual intervention required</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <% begin %>
+          <a href="<%= Rails.application.routes.url_helpers.root_url %>rpa_uploads/job_record/<%= @job_record_id %>" class="btn">
+            📊 View Detailed Status Report
+          </a>
+        <% rescue => e %>
+          <p><strong>View detailed status:</strong> RPA Uploads → Job Record <code><%= @job_record_id %></code></p>
+        <% end %>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p><strong>This is an automated notification from the Pay Stub Collection Agent system.</strong></p>
+      <p>Please investigate and resolve this issue promptly to avoid delays in loan processing.</p>
+      <p class="timestamp">Generated at <%= Time.current.strftime('%m/%d/%Y %I:%M %p %Z') %></p>
+    </div>
+  </div>
+</body>
+</html>

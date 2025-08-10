@@ -1,0 +1,75 @@
+**URGENT: RPA Upload Failed - Manual Intervention Required**
+
+Hello <%= @user.name %>,
+
+A pay stub document upload has failed all automated retry attempts and requires immediate manual intervention.
+
+═══════════════════════════════════════════════════════════════════
+📋 LOAN APPLICATION DETAILS
+═══════════════════════════════════════════════════════════════════
+Applicant ID:     <%= @loan_info[:applicant_id] %>
+LOS External ID:  <%= @loan_info[:los_external_id] %>
+Loan Status:      <%= @loan_info[:status]&.titleize %>
+Approved At:      <%= @loan_info[:approved_at]&.strftime('%m/%d/%Y %I:%M %p') || 'N/A' %>
+
+═══════════════════════════════════════════════════════════════════
+❌ FAILURE SUMMARY
+═══════════════════════════════════════════════════════════════════
+Total Attempts:   <%= @retry_info[:total_attempts] %> of <%= @retry_info[:max_attempts_allowed] %>
+Time Span:        <%= @retry_info[:time_span_hours] %> hours
+First Failure:    <%= @retry_info[:first_failure_at]&.strftime('%m/%d/%Y %I:%M %p') %>
+Final Failure:    <%= @retry_info[:final_failure_at]&.strftime('%m/%d/%Y %I:%M %p') %>
+
+═══════════════════════════════════════════════════════════════════
+🔍 FINAL ERROR DETAILS
+═══════════════════════════════════════════════════════════════════
+Error Code:       <%= @final_error[:code] %>
+Error Message:    <%= @final_error[:message] %>
+Error Type:       <%= @final_error[:error_class] %>
+Is Retryable:     <%= @final_error[:is_retryable] ? 'Yes' : 'No' %>
+
+═══════════════════════════════════════════════════════════════════
+📊 FAILURE PATTERN ANALYSIS
+═══════════════════════════════════════════════════════════════════
+<%= @formatted_failure_analysis %>
+
+═══════════════════════════════════════════════════════════════════
+📝 UPLOAD ATTEMPT HISTORY
+═══════════════════════════════════════════════════════════════════
+<%= @formatted_upload_attempts %>
+
+═══════════════════════════════════════════════════════════════════
+🔧 SUGGESTED ACTIONS
+═══════════════════════════════════════════════════════════════════
+Please take the following steps to resolve this issue:
+
+<% @escalation_info[:suggested_actions].each_with_index do |action, index| %>
+<%= index + 1 %>. <%= action.gsub(/^\d+\.\s*/, '') %>
+<% end %>
+
+═══════════════════════════════════════════════════════════════════
+🔗 SYSTEM INFORMATION
+═══════════════════════════════════════════════════════════════════
+Job Record ID:    <%= @job_record_id %>
+Organization:     <%= @organization.name %>
+Escalated At:     <%= @escalation_info[:escalated_at].strftime('%m/%d/%Y %I:%M %p') %>
+System Status:    Manual intervention required
+
+═══════════════════════════════════════════════════════════════════
+
+<% begin %>
+View Detailed Status Report:
+<%= Rails.application.routes.url_helpers.root_url %>rpa_uploads/job_record/<%= @job_record_id %>
+<% rescue => e %>
+View detailed status: RPA Uploads → Job Record <%= @job_record_id %>
+<% end %>
+
+═══════════════════════════════════════════════════════════════════
+
+This is an automated notification from the Pay Stub Collection Agent system.
+Please investigate and resolve this issue promptly to avoid delays in loan processing.
+
+Generated at <%= Time.current.strftime('%m/%d/%Y %I:%M %p %Z') %>
+
+For technical support, contact your system administrator.
+For urgent issues during business hours, escalate to your operations manager.
