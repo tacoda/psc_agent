@@ -15,14 +15,14 @@ namespace :pay_stub do
       prepare:   PayStub::PrepareJob,
       confirm:   PayStub::ConfirmJob,
       execute:   PayStub::ExecuteJob,
-      # monitor:   PayStub::MonitorJob,
+      monitor:   PayStub::MonitorJob,
       # modify:    PayStub::ModifyJob,
       # conclude:  PayStub::ConcludeJob
     }
   end
   
   # Create tasks for each job class
-  [:define, :locate, :prepare, :confirm, :execute].each do |name|
+  [:define, :locate, :prepare, :confirm, :execute, :monitor].each do |name|
     desc "Run PayStub::#{name.to_s.camelize}Job for a given JobRecord ID"
     task name, [:job_record_id] => :environment do |_, args|
       ensure_id!(args[:job_record_id])
