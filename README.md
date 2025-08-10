@@ -6,9 +6,18 @@ A [technical design document](docs/design_document.md) is included in the docume
 
 ## Setup
 
+### Prerequisites
+
+- PostgreSQL
+- Ruby
+- Bundler
+
 ```sh
 bundle install
-rails db:migrate
+bin/rails db:migrate
+bin/rails server
 ```
 
 ## Usage
+
+Navigate to `loclhost:3000/`
