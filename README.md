@@ -17,7 +17,8 @@ bundle install
 bin/rails db:migrate:queue
 bin/rails db:migrate
 bin/rails db:seed
-bin/dev
+bin/rails assets:precompile
+bin/rails server
 ```
 
 ## Usage
