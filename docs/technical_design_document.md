@@ -897,5 +897,4 @@ The new Pay Stub Collector agent will be designed to be cost-effective. We will 
 
 ## References
 
-- [Shastic Customer Interview Analysis](https://www.shastic.com/customer-interview-analysis)
 - [SOC 2 Compliance Guide](https://www.aicpa.org/soc4so)
