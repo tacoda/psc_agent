@@ -31,9 +31,8 @@ The new version of the Pay Stub Collector agent will be built on the existing Ma
 
 ## Out of Scope (Non-goals)
 
-- Creation of UI components for document collection or status tracking
 - The design of other agent workflows (e.g., Document Type Verifier).
-- The createion of a new user interface for document collection or status tracking.
+- The development of a new user interface for the Mago platform.
 - The creation of a new RPA worker from scratch.
 
 ## Solution
