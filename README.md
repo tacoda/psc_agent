@@ -1,9 +1,5 @@
 # Pay Stub Collector Agent
 
-## Technical Design Document
-
-A [technical design document](docs/technical_design_document.md) is included in the documentation of this repository.
-
 ## Setup
 
 ### Prerequisites
@@ -175,6 +171,7 @@ curl -X POST http://localhost:3000/batch_jobs/1/retry_failed
 ### Expected Responses
 
 Successful webhook trigger:
+
 ```json
 {
   "status": "success",
@@ -185,6 +182,7 @@ Successful webhook trigger:
 ```
 
 No trigger required:
+
 ```json
 {
   "status": "success",
@@ -193,6 +191,7 @@ No trigger required:
 ```
 
 Error response:
+
 ```json
 {
   "status": "error",
@@ -207,7 +206,7 @@ Acceptance tests for the given stories can be verified with tests.
 ```sh
 # Run individual test suites
 rails test test/integration/loan_approval_trigger_acceptance_test.rb
-rails test test/integration/rpa_upload_acceptance_test.rb  
+rails test test/integration/rpa_upload_acceptance_test.rb
 rails test test/integration/rpa_escalation_acceptance_test.rb
 
 # Run all acceptance tests with summary
